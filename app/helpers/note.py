@@ -33,7 +33,7 @@ def get_notes(
     )
 
     # Calculate total pages
-    total_pages = (total_notes + limit - 1) // limit
+    total_pages = total_notes // limit
 
     notes = (
         db.query(Note)
