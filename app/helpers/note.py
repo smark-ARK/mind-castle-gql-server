@@ -1,5 +1,5 @@
 from sqlalchemy.orm.session import Session
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, or_, func
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 from typing import Optional, List
@@ -12,10 +12,29 @@ from app.types.types import Participant
 def get_notes(
     current_user: User,
     q: Optional[str] = "",
-    limit: Optional[int] = 10,
-    skip: Optional[int] = 0,
+    page: Optional[int] = 1,
     db: Session = SessionLocal(),
 ):
+
+    limit = 10
+    skip = (page - 1) * limit
+
+    # Count total notes meeting the criteria
+    total_notes = (
+        db.query(func.count(Note.id))
+        .filter(
+            Note.owner_id == current_user.id,
+            or_(
+                Note.title.ilike(f"%{q}%"),
+                Note.detail.ilike(f"%{q}%"),
+            ),
+        )
+        .scalar()
+    )
+
+    # Calculate total pages
+    total_pages = (total_notes + limit - 1) // limit
+
     notes = (
         db.query(Note)
         .filter(
@@ -31,7 +50,7 @@ def get_notes(
         .all()
     )
 
-    return notes
+    return {"notes": notes, "total_pages": total_pages}
 
 
 async def get_note(
@@ -149,6 +168,7 @@ async def delete_note(
             f"Note with id {id} Does not Exist",
         )
     note_query.delete(synchronize_session=False)
+    db.commit()
     return
 
 

@@ -28,6 +28,12 @@ class Note:
 
 
 @type
+class PaginatedNotesResponse:
+    notes: List[Note]
+    total_pages: int
+
+
+@type
 class Participant:
     user: User
     permission: str

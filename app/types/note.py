@@ -8,6 +8,7 @@ from enum import Enum
 from app.types.types import (
     User,
     Note,
+    PaginatedNotesResponse,
     SharedResponse,
     NoteWithParticipants,
     Permissions,
@@ -30,17 +31,11 @@ from app.oauth2 import Info
 class Query:
     @field
     async def notes(
-        self,
-        info: Info,
-        q: Optional[str] = "",
-        limit: Optional[int] = 10,
-        skip: Optional[int] = 0,
-    ) -> List[Note]:
-        return get_notes(
-            current_user=info.context.user,
-            q=q,
-            limit=limit,
-            skip=skip,
+        self, info: Info, q: Optional[str] = "", page: Optional[int] = 1
+    ) -> PaginatedNotesResponse:
+        notes = get_notes(current_user=info.context.user, q=q, page=page)
+        return PaginatedNotesResponse(
+            notes=notes.get("notes"), total_pages=notes.get("total_pages")
         )
 
     @field
