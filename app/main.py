@@ -41,11 +41,7 @@ app.include_router(note.graphql_app, prefix="/graphql/notes")
 origins = [
     "http://localhost:5173",
     "http://localhost:3000",
-    "https://*",
-    "http://127.0.0.1:8000",
-    "https://simple-social-smark.netlify.app",
-    "http://127.0.0.1:3000",
-    "localhost:3000",
+    "https://mind-castle-gql.vercel.app",
 ]
 
 
