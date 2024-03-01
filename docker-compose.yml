@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    container_name: mind-castle-gql-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+
+  

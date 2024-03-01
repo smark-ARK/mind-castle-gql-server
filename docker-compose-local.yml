@@ -19,7 +19,7 @@ services:
           restart: true
 
     env_file:
-      - .env
+      - ./.env.local
     volumes:
       - ./:/app
 
